@@ -78,15 +78,6 @@ vec3 fourierApply(vec3 vibeA0, vec3 vibeA1, vec3 vibeB1, vec3 vibeA2, vec3 vibeB
     return vibeA0 + vibeA1 * g1.xxx + vibeB1 * g1.yyy + vibeA2 * g2.xxx + vibeB2 * g2.yyy;
 }
 
-vec2 transformGradient(vec2 basis, float h) {
-
-    return vec2(0.0);
-}
-
-vec3 bumpMap(vec2 uv, float height, vec4 col) {
-    return vec3(0.0);
-}
-
 float f(float val, float amt) {
     return mod(val, amt);
 }
