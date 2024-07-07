@@ -41,16 +41,17 @@ class _MyHomePageState extends State<MyHomePage>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 66),
     );
 
-    accelerometerEventStream().listen(_handleAccelerometerEvent);
+    accelerometerEventStream(samplingPeriod: SensorInterval.uiInterval)
+        .listen(_handleAccelerometerEvent);
   }
 
   void _handleAccelerometerEvent(AccelerometerEvent event) {
     final Offset newLightPosition = Offset(
       (event.x + 10) / 20,
-      (event.y + 10) / 20,
+      (-event.y + 10) / 20,
     );
 
     _configureLightPositionAnimation(newLightPosition);
@@ -65,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage>
       CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
     );
 
+    // print('QQQ2 x ${lightPosition.dx} y ${lightPosition.dy}');
     _animation!.addListener(() {
       setState(() => lightPosition = _animation!.value);
     });
