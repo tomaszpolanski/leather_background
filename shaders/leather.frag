@@ -79,12 +79,15 @@ vec3 fourierApply(vec3 n, vec3 vibeA0, vec3 vibeA1, vec3 vibeB1, vec3 vibeA2, ve
 }
 
 vec2 transformGradient(vec2 basis, float h) {
-    vec2 m1 = dFdx(basis), m2 = dFdy(basis);
+    vec2 m1 = vec2(0.0);
+    vec2 m2 = vec2(0.0);
+    // vec2 m1 = dFdx(basis), m2 = dFdy(basis);
     mat2 adjoint = mat2(m2.y, -m2.x, -m1.y, m1.x);
 
     float eps = 1e-7;
     float det = m2.x * m1.y - m1.x * m2.y + eps;
-    return vec2(dFdx(h), dFdy(h)) * adjoint / det;
+    // return vec2(dFdx(h), dFdy(h)) * adjoint / det;
+    return vec2(0.0);
 }
 
 vec3 bumpMap(vec2 uv, float height, vec4 col) {
