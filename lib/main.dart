@@ -95,7 +95,8 @@ class _MyHomePageState extends State<MyHomePage>
           details.localPosition,
           MediaQuery.sizeOf(context),
         ),
-        child: SizedBox.expand(
+        child: Container(
+          color: Colors.red,
           child: ShaderBuilder(
             (context, shader, child) {
               return CustomPaint(

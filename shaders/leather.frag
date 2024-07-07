@@ -72,28 +72,19 @@ void fourierAdd(vec3 delta, vec3 color, inout vec3 vibeA0, inout vec3 vibeA1, in
     vibeA2 += g2.x * color;
     vibeB2 += g2.y * color;
 }
-vec3 fourierApply(vec3 n, vec3 vibeA0, vec3 vibeA1, vec3 vibeB1, vec3 vibeA2, vec3 vibeB2) {
-    vec2 g1 = n.xy;
+vec3 fourierApply(vec3 vibeA0, vec3 vibeA1, vec3 vibeB1, vec3 vibeA2, vec3 vibeB2) {
+    vec2 g1 = vec2(0.0);
     vec2 g2 = doubleAngleIdentities(g1);
     return vibeA0 + vibeA1 * g1.xxx + vibeB1 * g1.yyy + vibeA2 * g2.xxx + vibeB2 * g2.yyy;
 }
 
 vec2 transformGradient(vec2 basis, float h) {
-    vec2 m1 = vec2(0.0);
-    vec2 m2 = vec2(0.0);
-    // vec2 m1 = dFdx(basis), m2 = dFdy(basis);
-    mat2 adjoint = mat2(m2.y, -m2.x, -m1.y, m1.x);
 
-    float eps = 1e-7;
-    float det = m2.x * m1.y - m1.x * m2.y + eps;
-    // return vec2(dFdx(h), dFdy(h)) * adjoint / det;
     return vec2(0.0);
 }
 
 vec3 bumpMap(vec2 uv, float height, vec4 col) {
-    float value = height * col.r;
-    vec2 gradient = transformGradient(uv, value);
-    return vec3(gradient, 1.0 - dot(gradient, gradient));
+    return vec3(0.0);
 }
 
 float f(float val, float amt) {
@@ -152,8 +143,7 @@ void main() {
     fourierAdd(lightInt, lightColor, vibeA0, vibeA1, vibeB1, vibeA2, vibeB2);
 
     // Bump map and color application
-    vec3 n = bumpMap(coords, 0.014, col * 0.15);
-    col.xyz = vec3(fourierApply(n, vibeA0, vibeA1, vibeB1, vibeA2, vibeB2));
+    col.xyz = vec3(fourierApply(vibeA0, vibeA1, vibeB1, vibeA2, vibeB2));
 
     fragColor = col;
 }
