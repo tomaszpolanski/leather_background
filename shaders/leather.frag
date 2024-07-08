@@ -8,6 +8,8 @@ uniform vec2 resolution;
 uniform vec2 u_lightPosition;
 uniform sampler2D uTexture;
 
+out vec4 fragColor;
+
 vec2 hash(vec2 p) {
     p = vec2(dot(p, vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)));
     return fract(p);
@@ -83,7 +85,7 @@ float f(float val, float amt) {
     return mod(val, amt);
 }
 
-out vec4 fragColor;
+
 
 void main() {
     vec2 position = FlutterFragCoord();
@@ -143,12 +145,6 @@ void main() {
     vec4 tx = texture(uTexture, uv).rgba;
 
     vec4 final = vec4(tx.r + col.r, tx.g + col.g, tx.b + col.b, 1);
-    //vec4 final = tx;
-    //vec4 final = col;
-
-//    vec2 uv = FlutterFragCoord().xy / resolution;
-//    fragColor = texture(uTexture, uv);
-
     fragColor = final;
 }
 
