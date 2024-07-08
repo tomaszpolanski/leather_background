@@ -27,4 +27,4 @@ You can test the light movement by:
 ## Credits
 - Original shader code adapted from [@dejager](https://twitter.com/dejager).
 - Original source: GitHub [dejager/wallpaper](https://github.com/dejager/wallpaper/)
-- Photo by Photo by eberhard grossgasteiger from Pexels: https://www.pexels.com/photo/mountain-at-night-under-a-starry-sky-1624496/
+- Photo by eberhard grossgasteiger from Pexels: https://www.pexels.com/photo/mountain-at-night-under-a-starry-sky-1624496/
