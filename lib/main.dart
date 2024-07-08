@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -29,53 +31,56 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  Offset lightPosition = const Offset(0.5, 0.5);
-  AnimationController? _animationController;
-  Animation<Offset>? _animation;
+  var lightPosition = const Offset(0.5, 0.5);
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 66),
+  );
+  StreamSubscription<AccelerometerEvent>? _subscription;
 
   @override
   void initState() {
     super.initState();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 66),
-    );
-
-    accelerometerEventStream(samplingPeriod: SensorInterval.uiInterval)
-        .listen(_handleAccelerometerEvent);
-  }
-
-  void _handleAccelerometerEvent(AccelerometerEvent event) {
-    final Offset newLightPosition =
-        Offset(event.x * 0.1 + 0.5, -event.y * 0.1 + 1);
-
-    _configureLightPositionAnimation(newLightPosition);
-
-    _animationController!.reset();
-    _animationController!.forward();
-  }
-
-  void _configureLightPositionAnimation(Offset newLightPosition) {
-    _animation =
-        Tween<Offset>(begin: lightPosition, end: newLightPosition).animate(
-      CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
-    );
-
-    // print('QQQ2 x ${lightPosition.dx} y ${lightPosition.dy}');
-    _animation!.addListener(() {
-      setState(() => lightPosition = _animation!.value);
-    });
+    _subscription =
+        accelerometerEventStream(samplingPeriod: SensorInterval.uiInterval)
+            .listen(_handleAccelerometerEvent);
   }
 
   @override
   void dispose() {
-    _animationController?.dispose();
+    _animationController.dispose();
+    _subscription?.cancel();
     super.dispose();
   }
 
+  void _handleAccelerometerEvent(AccelerometerEvent event) {
+    final Offset newLightPosition = Offset(
+      event.x * 0.1 + 0.5,
+      -event.y * 0.1 + 1,
+    );
+
+    _configureLightPositionAnimation(newLightPosition);
+
+    _animationController
+      ..reset()
+      ..forward();
+  }
+
+  void _configureLightPositionAnimation(Offset newLightPosition) {
+    final animation = Tween<Offset>(
+      begin: lightPosition,
+      end: newLightPosition,
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    animation.addListener(() {
+      setState(() => lightPosition = animation.value);
+    });
+  }
+
   void _updateLightPosition(Offset localPosition, Size size) {
-    _animationController?.stop();
+    _animationController.stop();
     setState(() {
       lightPosition = Offset(
         localPosition.dx / size.width,
@@ -88,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onPanEnd: (_) => _animationController?.reset(),
+        onPanEnd: (_) => _animationController.reset(),
         onPanUpdate: (details) => _updateLightPosition(
           details.localPosition,
           MediaQuery.sizeOf(context),
@@ -97,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage>
           width: double.infinity,
           height: double.infinity,
           child: ShaderBuilder(
-            (context, shader, child) {
+            (_, shader, __) {
               return AnimatedSampler(
                 (image, size, canvas) {
                   shader.setFloat(0, size.width);

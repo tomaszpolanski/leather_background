@@ -81,16 +81,9 @@ vec3 fourierApply(vec3 vibeA0, vec3 vibeA1, vec3 vibeB1, vec3 vibeA2, vec3 vibeB
     return vibeA0 + vibeA1 * g1.xxx + vibeB1 * g1.yyy + vibeA2 * g2.xxx + vibeB2 * g2.yyy;
 }
 
-float f(float val, float amt) {
-    return mod(val, amt);
-}
-
-
-
 void main() {
     vec2 position = FlutterFragCoord();
     vec4 bounds = vec4(0.0, 0.0, resolution.x, resolution.y);
-
     vec4 color = vec4(1);
 
     vec2 p = position / max(bounds.z, bounds.w);
@@ -112,7 +105,7 @@ void main() {
     float strength = 20.0;
 
     float x = (p.x + 4.0 ) * (coords.y + 4.0 ) * 10.0;
-    vec4 grain = vec4(f((f(x, 13.0) + 1.0) * (f(x, 123.0) + 1.0), 0.01) - 0.005);
+    vec4 grain = vec4(mod((mod(x, 13.0) + 1.0) * (mod(x, 123.0) + 1.0), 0.01) - 0.005);
 
     col += min(col, grain);
 
@@ -140,12 +133,9 @@ void main() {
     // Bump map and color application
     col.xyz = vec3(fourierApply(vibeA0, vibeA1, vibeB1, vibeA2, vibeB2));
 
-
     vec2 uv = FlutterFragCoord().xy / resolution;
     vec4 tx = texture(uTexture, uv).rgba;
 
-    vec4 final = vec4(tx.r + col.r, tx.g + col.g, tx.b + col.b, 1);
-    fragColor = final;
+    vec4 merge = vec4(tx.r + col.r, tx.g + col.g, tx.b + col.b, 1);
+    fragColor = merge;
 }
-
-
