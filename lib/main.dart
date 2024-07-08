@@ -47,10 +47,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _handleAccelerometerEvent(AccelerometerEvent event) {
-    final Offset newLightPosition = Offset(
-      (event.x * 0.1 + 0.5),
-      -(event.y * 0.1) + 1,
-    );
+    final Offset newLightPosition =
+        Offset(event.x * 0.1 + 0.5, -event.y * 0.1 + 1);
 
     _configureLightPositionAnimation(newLightPosition);
 
