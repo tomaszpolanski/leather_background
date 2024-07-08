@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Leather background shader demo',
+      title: 'Light reflection shader demo',
       theme: ThemeData(
         colorSchemeSeed: Colors.blue,
         useMaterial3: true,
@@ -28,15 +28,11 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Card(
-          child: LightReflection(
-            child: Image.asset(
-              'assets/pexels-eberhardgross-1624496.jpg',
-              fit: BoxFit.fitWidth,
-            ),
+      body: Card(
+        child: LightReflection(
+          child: Image.asset(
+            'assets/pexels-eberhardgross-1624496.jpg',
+            fit: BoxFit.fitWidth,
           ),
         ),
       ),
@@ -55,19 +51,19 @@ class LightReflection extends StatefulWidget {
 
 class _LightReflectionState extends State<LightReflection>
     with SingleTickerProviderStateMixin {
-  var lightPosition = const Offset(0.5, 0.5);
+  var _lightPosition = const Offset(0.5, 0.5);
+  static const _interval = SensorInterval.uiInterval;
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 66),
+    duration: _interval,
   );
   StreamSubscription<AccelerometerEvent>? _subscription;
 
   @override
   void initState() {
     super.initState();
-    _subscription =
-        accelerometerEventStream(samplingPeriod: SensorInterval.uiInterval)
-            .listen(_handleAccelerometerEvent);
+    _subscription = accelerometerEventStream(samplingPeriod: _interval)
+        .listen(_handleAccelerometerEvent);
   }
 
   @override
@@ -92,21 +88,21 @@ class _LightReflectionState extends State<LightReflection>
 
   void _configureLightPositionAnimation(Offset newLightPosition) {
     final animation = Tween<Offset>(
-      begin: lightPosition,
+      begin: _lightPosition,
       end: newLightPosition,
     ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
     animation.addListener(() {
-      setState(() => lightPosition = animation.value);
+      setState(() => _lightPosition = animation.value);
     });
   }
 
   void _updateLightPosition(Offset localPosition, Size size) {
     _animationController.stop();
     setState(() {
-      lightPosition = Offset(
+      _lightPosition = Offset(
         localPosition.dx / size.width,
         localPosition.dy / size.height,
       );
@@ -127,8 +123,8 @@ class _LightReflectionState extends State<LightReflection>
             (image, size, canvas) {
               shader.setFloat(0, size.width);
               shader.setFloat(1, size.height);
-              shader.setFloat(2, lightPosition.dx);
-              shader.setFloat(3, lightPosition.dy);
+              shader.setFloat(2, _lightPosition.dx);
+              shader.setFloat(3, _lightPosition.dy);
               shader.setImageSampler(0, image);
 
               final paint = Paint()..shader = shader;
