@@ -95,33 +95,31 @@ class _MyHomePageState extends State<MyHomePage>
           details.localPosition,
           MediaQuery.sizeOf(context),
         ),
-        child: Container(
-          color: Colors.red,
-          width: double.infinity,
-          height: double.infinity,
-          child: ShaderBuilder(
-            (context, shader, child) {
-              return AnimatedSampler(
-                (image, size, canvas) {
-                  shader.setFloat(0, size.width);
-                  shader.setFloat(1, size.height);
-                  shader.setFloat(2, lightPosition.dx);
-                  shader.setFloat(3, lightPosition.dy);
-                  shader.setImageSampler(0, image);
+        child: ShaderBuilder(
+          (context, shader, child) {
+            return AnimatedSampler(
+              (image, size, canvas) {
+                shader.setFloat(0, size.width);
+                shader.setFloat(1, size.height);
+                shader.setFloat(2, lightPosition.dx);
+                shader.setFloat(3, lightPosition.dy);
+                shader.setImageSampler(0, image);
 
-                  final paint = Paint()..shader = shader;
-                  canvas.drawRect(
-                    Rect.fromLTWH(0, 0, size.width, size.height),
-                    paint,
-                  );
-                },
-                child: const SizedBox(),
-              );
-            },
-            assetKey: 'shaders/leather.frag',
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
+                final paint = Paint()..shader = shader;
+                canvas.drawRect(
+                  Rect.fromLTWH(0, 0, size.width, size.height),
+                  paint,
+                );
+              },
+              child: Image.network(
+                'https://i.imgur.com/NEKJ0pU.png',
+                fit: BoxFit.fill,
+              ),
+            );
+          },
+          assetKey: 'shaders/leather.frag',
+          child: const Center(
+            child: CircularProgressIndicator(),
           ),
         ),
       ),
