@@ -56,3 +56,5 @@ flutter:
   uses-material-design: true
   shaders:
     - shaders/leather.frag
+  assets:
+    - assets/
