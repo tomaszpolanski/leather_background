@@ -136,7 +136,7 @@ class _LightReflectionState extends State<LightReflection>
             child: widget.child,
           );
         },
-        assetKey: 'shaders/leather.frag',
+        assetKey: 'shaders/light.frag',
         child: widget.child,
       ),
     );
