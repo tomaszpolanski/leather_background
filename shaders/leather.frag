@@ -88,9 +88,8 @@ out vec4 fragColor;
 void main() {
     vec2 position = FlutterFragCoord();
     vec4 bounds = vec4(0.0, 0.0, resolution.x, resolution.y);
-    vec2 uv = FlutterFragCoord().xy / resolution;
 
-    vec4 color = texture(uTexture, uv).rgba;
+    vec4 color = vec4(1);
 
     vec2 p = position / max(bounds.z, bounds.w);
     vec2 coords = position / bounds.zw;
@@ -133,16 +132,24 @@ void main() {
     vec2 light = u_lightPosition;
     vec2 delta = coords - light;
     vec3 lightInt = vec3(delta, 0.2);
-    vec3 lightColor = vec3(color.xyz) * 0.4 * max(0.0, 0.7 - length(delta) / 2.75);
+    vec3 lightColor = vec3(color.xyz) * 0.9 * max(0.0, 0.7 - length(delta) / 2.75);
     fourierAdd(lightInt, lightColor, vibeA0, vibeA1, vibeB1, vibeA2, vibeB2);
 
     // Bump map and color application
     col.xyz = vec3(fourierApply(vibeA0, vibeA1, vibeB1, vibeA2, vibeB2));
 
+
+    vec2 uv = FlutterFragCoord().xy / resolution;
+    vec4 tx = texture(uTexture, uv).rgba;
+
+    vec4 final = vec4(tx.r + col.r, tx.g + col.g, tx.b + col.b, 1);
+    //vec4 final = tx;
+    //vec4 final = col;
+
 //    vec2 uv = FlutterFragCoord().xy / resolution;
 //    fragColor = texture(uTexture, uv);
 
-    fragColor = col;
+    fragColor = final;
 }
 
 
