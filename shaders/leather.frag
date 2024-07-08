@@ -1,14 +1,14 @@
-// This shader code was adapted from an original metal shader by @dejager.
-// Original source: https://github.com/dejager/wallpaper/
+// This shader code was adapted from an original metal shader by @dejager and @raoufrahiche.
+// Original source: https://github.com/dejager/wallpaper/ and https://github.com/Rahiche/leather_background
 // Follow the creator on Twitter: https://twitter.com/dejager
 
 #include <flutter/runtime_effect.glsl>
 
-uniform vec2 resolution;
-uniform vec2 u_lightPosition;
-uniform sampler2D uTexture;
+uniform vec2 inResolution;
+uniform vec2 inLightPosition;
+uniform sampler2D inTexture;
 
-out vec4 fragColor;
+out vec4 outFragColor;
 
 vec2 hash(vec2 p) {
     p = vec2(dot(p, vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)));
@@ -83,7 +83,7 @@ vec3 fourierApply(vec3 vibeA0, vec3 vibeA1, vec3 vibeB1, vec3 vibeA2, vec3 vibeB
 
 void main() {
     vec2 position = FlutterFragCoord();
-    vec4 bounds = vec4(0.0, 0.0, resolution.x, resolution.y);
+    vec4 bounds = vec4(0.0, 0.0, inResolution.x, inResolution.y);
     vec4 color = vec4(1);
 
     vec2 p = position / max(bounds.z, bounds.w);
@@ -124,8 +124,7 @@ void main() {
     vec3 dir = vec3(1.0, 1.0, 0.0);
     fourierAdd(dir, vec3(0.2, 0.2, 0.2), vibeA0, vibeA1, vibeB1, vibeA2, vibeB2);
 
-    vec2 light = u_lightPosition;
-    vec2 delta = coords - light;
+    vec2 delta = coords - inLightPosition;
     vec3 lightInt = vec3(delta, 0.2);
     vec3 lightColor = vec3(color.xyz) * 0.9 * max(0.0, 0.7 - length(delta) / 2.75);
     fourierAdd(lightInt, lightColor, vibeA0, vibeA1, vibeB1, vibeA2, vibeB2);
@@ -133,9 +132,9 @@ void main() {
     // Bump map and color application
     col.xyz = vec3(fourierApply(vibeA0, vibeA1, vibeB1, vibeA2, vibeB2));
 
-    vec2 uv = FlutterFragCoord().xy / resolution;
-    vec4 tx = texture(uTexture, uv).rgba;
+    vec2 uv = FlutterFragCoord().xy / inResolution;
+    vec4 tx = texture(inTexture, uv).rgba;
 
     vec4 merge = vec4(tx.r + col.r, tx.g + col.g, tx.b + col.b, 1);
-    fragColor = merge;
+    outFragColor = merge;
 }
