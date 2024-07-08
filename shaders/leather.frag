@@ -6,6 +6,7 @@
 
 uniform vec2 resolution;
 uniform vec2 u_lightPosition;
+uniform sampler2D uTexture;
 
 vec2 hash(vec2 p) {
     p = vec2(dot(p, vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)));
@@ -87,7 +88,8 @@ out vec4 fragColor;
 void main() {
     vec2 position = FlutterFragCoord();
     vec4 bounds = vec4(0.0, 0.0, resolution.x, resolution.y);
-    vec4 color = vec4(1.0);
+    vec3 color1 = texture(uTexture, position).rgb;
+    vec4 color = vec4(0.0, 1.0, 0.0, 1.0);
 
     vec2 p = position / max(bounds.z, bounds.w);
     vec2 coords = position / bounds.zw;

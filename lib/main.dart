@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -99,14 +97,25 @@ class _MyHomePageState extends State<MyHomePage>
         ),
         child: Container(
           color: Colors.red,
+          width: double.infinity,
+          height: double.infinity,
           child: ShaderBuilder(
             (context, shader, child) {
-              return CustomPaint(
-                size: MediaQuery.of(context).size,
-                painter: ShaderPainter(
-                  shader: shader,
-                  lightPosition: lightPosition,
-                ),
+              return AnimatedSampler(
+                (image, size, canvas) {
+                  shader.setFloat(0, size.width);
+                  shader.setFloat(1, size.height);
+                  shader.setFloat(2, lightPosition.dx);
+                  shader.setFloat(3, lightPosition.dy);
+                  shader.setImageSampler(0, image);
+
+                  final paint = Paint()..shader = shader;
+                  canvas.drawRect(
+                    Rect.fromLTWH(0, 0, size.width, size.height),
+                    paint,
+                  );
+                },
+                child: const SizedBox(),
               );
             },
             assetKey: 'shaders/leather.frag',
@@ -117,34 +126,5 @@ class _MyHomePageState extends State<MyHomePage>
         ),
       ),
     );
-  }
-}
-
-class ShaderPainter extends CustomPainter {
-  ShaderPainter({
-    required this.shader,
-    required this.lightPosition,
-  });
-
-  ui.FragmentShader shader;
-  Offset lightPosition;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    shader.setFloat(0, size.width);
-    shader.setFloat(1, size.height);
-    shader.setFloat(2, lightPosition.dx);
-    shader.setFloat(3, lightPosition.dy);
-
-    final paint = Paint()..shader = shader;
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant ShaderPainter oldDelegate) {
-    return oldDelegate.lightPosition != lightPosition;
   }
 }
