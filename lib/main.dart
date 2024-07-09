@@ -29,10 +29,14 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Card(
-        child: LightReflection(
-          child: Image.asset(
-            'assets/pexels-eberhardgross-1624496.jpg',
-            fit: BoxFit.fitWidth,
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: LightReflection(
+            child: Image.asset(
+              'assets/pexels-eberhardgross-1624496.jpg',
+              fit: BoxFit.fitWidth,
+            ),
           ),
         ),
       ),
