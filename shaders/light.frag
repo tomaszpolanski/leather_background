@@ -6,6 +6,8 @@
 
 uniform vec2 inResolution;
 uniform vec2 inLightPosition;
+uniform float inIntensity;
+
 uniform sampler2D inTexture;
 
 out vec4 outFragColor;
@@ -135,6 +137,6 @@ void main() {
     vec2 uv = FlutterFragCoord().xy / inResolution;
     vec4 tx = texture(inTexture, uv).rgba;
 
-    vec4 merge = vec4(tx.r + col.r, tx.g + col.g, tx.b + col.b, 1);
+    vec4 merge = vec4(tx.r + col.r * inIntensity, tx.g + col.g  * inIntensity, tx.b + col.b * inIntensity, 1);
     outFragColor = merge;
 }

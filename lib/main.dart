@@ -125,10 +125,12 @@ class _LightReflectionState extends State<LightReflection>
         (_, shader, __) {
           return AnimatedSampler(
             (image, size, canvas) {
+              const intensity = 0.9;
               shader.setFloat(0, size.width);
               shader.setFloat(1, size.height);
               shader.setFloat(2, _lightPosition.dx);
               shader.setFloat(3, _lightPosition.dy);
+              shader.setFloat(4, intensity);
               shader.setImageSampler(0, image);
 
               final paint = Paint()..shader = shader;
